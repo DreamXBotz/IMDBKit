@@ -176,7 +176,15 @@ gpus = json.loads(webgl)
 
 def create_fingerprint(user_agent: str):
     ts = int(time.time() * 1000)
-    gpu = random.choice(gpus)
+
+    if "Windows" in user_agent:
+        candidates = [g for g in gpus if "Direct3D11" in g["webgl_unmasked_renderer"]]
+    elif "Mac" in user_agent:
+        candidates = [g for g in gpus if "Apple" in g["webgl_unmasked_renderer"]]
+    else:
+        candidates = gpus
+
+    gpu = random.choice(candidates or gpus)
 
     bins = [random.randrange(0,40) for _ in range(256)]
     bins[0], bins[-1] = random.randrange(14473, 16573), random.randrange(14473, 16573)
