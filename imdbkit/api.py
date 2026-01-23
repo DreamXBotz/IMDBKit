@@ -371,7 +371,7 @@ class IMDBKit:
         return movie
 
     @lru_cache(maxsize=128)
-    def search_title(
+    def search_movie(
         self,
         title: str,
         locale: Optional[str] = None,
