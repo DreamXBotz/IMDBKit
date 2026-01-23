@@ -4,7 +4,6 @@ from typing import Optional, Dict, Union, List, Tuple, Any
 from functools import lru_cache
 from time import time
 import logging
-import niquests
 import json
 from lxml import html
 from enum import Enum
@@ -90,9 +89,10 @@ class IMDBKit:
         try:
           tk , host = WafHandler.parse_challenge(text)
           if user_agent:
-            token = WafHandler(tk, host, "www.imdb.com", user_agent=user_agent)()
+            token, cookies = WafHandler(tk, host, "www.imdb.com", user_agent=user_agent)()
           else:
-            token = WafHandler(tk, host, "www.imdb.com")()
+            token, cookies = WafHandler(tk, host, "www.imdb.com")()
+          self.session.cookies.update(cookies)
           self.session.cookies.update({"aws-waf-token" : token})
           return {"aws-waf-token": token}
         except Exception:
