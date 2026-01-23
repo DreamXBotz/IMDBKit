@@ -139,6 +139,10 @@ pip install .[test]
 pytest
 ```
 
+## Credits
+
+This repository is a **modified version** of the original [imdbinfo](https://github.com/tveronesi/imdbinfo) Python package by tveronesi.
+
 ## Disclaimer
 
 This library is intended for educational and research purposes only. It scrapes data from IMDb, which may be against their Terms of Service. Use it responsibly and at your own risk. The authors of this library are not responsible for any misuse or consequences resulting from the use of this software.
