@@ -241,7 +241,7 @@ class MovieDetail(SeriesMixin, BaseModel):
     release_date: Optional[str] = None
     languages: List[str] = Field(default_factory=list)
     languages_text: List[str] = Field(default_factory=list)
-    certificates: Dict[str, Tuple[str, str]] = Field(default_factory=dict)
+    certificates: Dict[str, Dict[str, str]] = Field(default_factory=dict)
     mpaa: Optional[str] = None
     directors: List[Person] = Field(default_factory=list)
     stars: List[Person] = Field(default_factory=list)
