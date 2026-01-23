@@ -14,7 +14,7 @@ authors = [
 ]
 dependencies = [
     "niquests",
-    "lxml",
+    "lxml>=5.3.0",
     "pydantic",
     "jmespath",
     "deprecated",
@@ -24,7 +24,7 @@ dependencies = [
 ]
 
 
-urls = { Homepage = "https://t.me/SilentXBotz" }
+urls = { Homepage = "https://github.com/NBBotz/IMDBKit" }
 
 keywords = [
     "movie",
