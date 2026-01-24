@@ -277,6 +277,13 @@ class MovieDetail(SeriesMixin, BaseModel):
     categories: Dict[str, List[Union[Person, CastMember]]] = Field(default_factory=dict)
     company_credits: Dict[str, List[CompanyInfo]] = Field(default_factory=dict)
 
+    writers: List[Person] = Field(default_factory=list)
+    producers: List[Person] = Field(default_factory=list)
+    composers: List[Person] = Field(default_factory=list)
+    cinematographers: List[Person] = Field(default_factory=list)
+    music_team: List[Person] = Field(default_factory=list)
+    distributors: List[CompanyInfo] = Field(default_factory=list)
+
     @field_validator(
         "languages",
         "country_codes",
