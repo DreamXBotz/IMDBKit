@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "imdbkit"
-version = "2.0.0"
+version = "2.0.2"
 description = "A robust Python library for retrieving detailed information about movies, TV series, and celebrities from IMDb."
 readme = "README.md"
 license = { text = "MIT" }
