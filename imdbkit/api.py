@@ -160,6 +160,7 @@ class IMDBKit:
     # ── GraphQL request (no WAF — uses plain niquests) ─────────────────────────
 
     def _make_graphql_request(self, headers, search_term, payload, url) -> Any:
+        headers.setdefault("x-imdb-client-name", "imdb-web-next")
         resp = cffi_requests.post(url, headers=headers, json=payload, impersonate="chrome")
         if resp.status_code != 200:
             logger.error("GraphQL request failed: %s", resp.status_code)
