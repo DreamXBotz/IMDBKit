@@ -21,6 +21,7 @@
 
 import random
 import re
+from types import SimpleNamespace
 from typing import Optional, Dict, Union, List, Tuple, Any
 from functools import lru_cache
 from time import time
@@ -95,6 +96,8 @@ TitleFilter = Union[TitleType, Tuple[TitleType, ...]]
 class IMDBKit:
     def __init__(self, locale: Optional[str] = None):
         self.locale = locale
+        session_cls = getattr(niquests, "Session", lambda: SimpleNamespace(get=None))
+        self.session = session_cls()
 
     def _normalize_imdb_id(self, imdb_id: str, locale: Optional[str] = None):
         imdb_id = str(imdb_id)
@@ -158,7 +161,6 @@ class IMDBKit:
 
     def _make_graphql_request(self, headers, search_term, payload, url) -> Any:
         resp = cffi_requests.post(url, headers=headers, json=payload, impersonate="chrome")
-        # resp = niquests.post(url, headers=headers, json=payload)
         if resp.status_code != 200:
             logger.error("GraphQL request failed: %s", resp.status_code)
             error_msg = f"GraphQL request failed for {search_term}: HTTP {resp.status_code}"
@@ -177,7 +179,8 @@ class IMDBKit:
     def get_movie(self, imdb_id: str, locale: Optional[str] = None) -> Optional[MovieDetail]:
         """Fetch full movie details. Uses HTML page + WAF solver."""
         imdb_id, lang = self._normalize_imdb_id(imdb_id, locale)
-        url = f"https://www.imdb.com/{lang}/title/tt{imdb_id}/reference"
+        url_lang = f"{lang}/" if lang else ""
+        url = f"https://www.imdb.com/{url_lang}title/tt{imdb_id}/reference"
         t0 = time()
         logger.info("Fetching movie %s", imdb_id)
         raw_json = self._request_json_url(url)
@@ -290,7 +293,8 @@ class IMDBKit:
     def get_name(self, person_id: str, locale: Optional[str] = None) -> Optional[PersonDetail]:
         """Fetch person details. Uses HTML page + WAF solver."""
         person_id, lang = self._normalize_imdb_id(person_id, locale)
-        url = f"https://www.imdb.com/{lang}/name/nm{person_id}/"
+        url_lang = f"{lang}/" if lang else ""
+        url = f"https://www.imdb.com/{url_lang}name/nm{person_id}/"
         t0 = time()
         logger.info("Fetching person %s", person_id)
         raw_json = self._request_json_url(url)
@@ -303,7 +307,8 @@ class IMDBKit:
     ) -> SeasonEpisodesList:
         """Fetch season episodes. Uses HTML page + WAF solver."""
         imdb_id, lang = self._normalize_imdb_id(imdb_id, locale)
-        url = f"https://www.imdb.com/{lang}/title/tt{imdb_id}/episodes/?season={season}"
+        url_lang = f"{lang}/" if lang else ""
+        url = f"https://www.imdb.com/{url_lang}title/tt{imdb_id}/episodes/?season={season}"
         logger.info("Fetching episodes for series %s season %s", imdb_id, season)
         raw_json = self._request_json_url(url)
         episodes = parse_json_season_episodes(raw_json)
@@ -314,7 +319,8 @@ class IMDBKit:
     def get_all_episodes(self, imdb_id: str, locale: Optional[str] = None):
         """Fetch all episodes via search URL. Uses HTML page + WAF solver."""
         series_id, lang = self._normalize_imdb_id(imdb_id, locale)
-        url = f"https://www.imdb.com/{lang}/search/title/?count=250&series=tt{series_id}&sort=release_date,asc"
+        url_lang = f"{lang}/" if lang else ""
+        url = f"https://www.imdb.com/{url_lang}search/title/?count=250&series=tt{series_id}&sort=release_date,asc"
         logger.info("Fetching all episodes for series %s", imdb_id)
         raw_json = self._request_json_url(url)
         episodes = parse_json_bulked_episodes(raw_json)
